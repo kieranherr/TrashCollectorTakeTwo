@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +11,6 @@ using TrashCollector.Models;
 
 namespace TrashCollector.Controllers
 {
-    [Authorize(Roles = "Customer")]
     public class CustomersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,26 +23,21 @@ namespace TrashCollector.Controllers
         // GET: Customers
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Customer.Include(c => c.IdentityUser);
-            return View(await applicationDbContext.ToListAsync());
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cust = _context.Customer.Where(c => c.IdentityUserId == userId).ToList();
+            if (cust == null)
+            {
+                return RedirectToAction("Create");
+
+                
+            }
+            return View(cust);
         }
 
         // GET: Customers/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var customer = await _context.Customer
-                .Include(c => c.IdentityUser)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
+            var customer = _context.Customer.Where(c => c.Id == id).Single();
             return View(customer);
         }
 
@@ -59,10 +53,11 @@ namespace TrashCollector.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Address,City,State,ZipCode,IdentityUserId")] Customer customer)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Address,City,State,ZipCode,PickUpDate,IdentityUserId")] Customer customer)
         {
             if (ModelState.IsValid)
             {
+                _context.Update(customer);
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -93,7 +88,7 @@ namespace TrashCollector.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Address,City,State,ZipCode,IdentityUserId")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Address,City,State,ZipCode,PickUpDate,IdentityUserId")] Customer customer)
         {
             if (id != customer.Id)
             {

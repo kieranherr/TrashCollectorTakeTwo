@@ -19,6 +19,7 @@ namespace TrashCollector.Models
         public string City { get; set; }
         public string State { get; set; }
         public int ZipCode { get; set; }
+        public string PickUpDate { get; set; }
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }
         public IdentityUser IdentityUser { get; set; }
