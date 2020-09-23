@@ -10,7 +10,7 @@ using TrashCollector.Data;
 namespace TrashCollector.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200923164626_ResetDatabase")]
+    [Migration("20200923210155_ResetDatabase")]
     partial class ResetDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,22 +50,22 @@ namespace TrashCollector.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b2114625-760b-4923-91ba-77c5756b4043",
-                            ConcurrencyStamp = "b7449590-d155-4750-8120-47f07f47774a",
+                            Id = "d85f0c41-5758-4542-8655-ec7e937d3c4a",
+                            ConcurrencyStamp = "41cb4a97-2cc5-426d-9a42-645f486dfee3",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "bf59acce-6f7c-4b48-ab24-93b4d4a94bbf",
-                            ConcurrencyStamp = "6877ae51-2949-462c-bc50-74582c911b17",
+                            Id = "0f4278ff-0796-4423-a58c-a33cabbadc60",
+                            ConcurrencyStamp = "3dc97067-ad29-4d75-aaa1-b47711eb3436",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "0c1a4f74-d90d-4ce3-a3e4-41e50de6bc50",
-                            ConcurrencyStamp = "31763994-8ae9-4302-a3c2-b52b0d7c2e85",
+                            Id = "e6803bf5-8bf3-45a1-8204-e89d7eed7501",
+                            ConcurrencyStamp = "f0b13be2-2e9e-4315-9e37-f18f3f34841c",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -249,6 +249,9 @@ namespace TrashCollector.Migrations
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("AmountSpentOnTrash")
+                        .HasColumnType("float");
 
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");

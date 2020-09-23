@@ -21,6 +21,7 @@ namespace TrashCollector.Models
         public string? SusEndDate { get; set; }
         public string? OneTimePickUpDay { get; set; }
         public int NumOfPickups { get; set; }
+        public double AmountSpentOnTrash { get; set; }
         public bool PickedUp { get; set; }
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }

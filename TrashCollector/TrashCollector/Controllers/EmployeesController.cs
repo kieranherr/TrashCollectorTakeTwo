@@ -49,15 +49,15 @@ namespace TrashCollector.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employee
+             var customer = await _context.Customer
                 .Include(e => e.IdentityUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(customer);
         }
 
         // GET: Employees/Create
@@ -72,7 +72,7 @@ namespace TrashCollector.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,ZipCode,IdentityUserId")] Employee employee)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,ZipCode,PricePerPickup,IdentityUserId")] Employee employee)
         {
             if (ModelState.IsValid)
             {
@@ -106,7 +106,7 @@ namespace TrashCollector.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email, PickedUp, Address,City,State,ZipCode,PickUpDate,SusStartDate,SusEndDate,OneTimePickUpDay,IdentityUserId")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email, PickedUp, Address,City,State,ZipCode,PickUpDate,SusStartDate,SusEndDate,OneTimePickUpDay,AmountSpentOnTrash,NumOfPickups,IdentityUserId")] Customer customer)
          {
             
 
@@ -114,9 +114,12 @@ namespace TrashCollector.Controllers
             {
                 try
                 {
+                    var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var employeeLoggedIn = _context.Employee.Where(e => e.IdentityUserId == userId).FirstOrDefault();
                     int pickup = customer.NumOfPickups;
                     pickup++;
                     customer.NumOfPickups = pickup;
+                    customer.AmountSpentOnTrash = employeeLoggedIn.PricePerPickup * customer.NumOfPickups;
                     _context.Update(customer);
                     await _context.SaveChangesAsync();
                 }
