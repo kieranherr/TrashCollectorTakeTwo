@@ -24,14 +24,12 @@ namespace TrashCollector.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cust = _context.Customer.Where(c => c.IdentityUserId == userId).ToList();
+            var cust = _context.Customer.Where(c => c.IdentityUserId == userId).FirstOrDefault();
             if (cust == null)
             {
-                return RedirectToAction("Create");
-
-                
+                return RedirectToAction("Create");  
             }
-            return View(cust);
+            return View("Details", cust);
         }
 
         // GET: Customers/Details/5
@@ -54,7 +52,7 @@ namespace TrashCollector.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Address,City,State,ZipCode,PickUpDate,IdentityUserId")] Customer customer)
-        {
+         {
             if (ModelState.IsValid)
             {
                 _context.Update(customer);
@@ -88,7 +86,7 @@ namespace TrashCollector.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Address,City,State,ZipCode,PickUpDate,IdentityUserId")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Address,City,State,ZipCode,PickUpDate,SusStartDate,SusEndDate,OneTimePickUpDay,IdentityUserId")] Customer customer)
         {
             if (id != customer.Id)
             {

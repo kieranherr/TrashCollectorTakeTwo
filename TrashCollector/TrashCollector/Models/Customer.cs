@@ -20,6 +20,12 @@ namespace TrashCollector.Models
         public string State { get; set; }
         public int ZipCode { get; set; }
         public string PickUpDate { get; set; }
+        public bool IsSuspended { get; set; }
+        public string? SusStartDate { get; set; }
+        public string? SusEndDate { get; set; }
+        public string? OneTimePickUpDay { get; set; }
+        public int NumOfPickups { get; set; }
+        public bool PickedUp { get; set; }
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }
         public IdentityUser IdentityUser { get; set; }
