@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using TrashCollector.Data;
 using TrashCollector.Models;
 
@@ -37,7 +36,7 @@ namespace TrashCollector.Controllers
             //Customers with no suspended service
             var customersInZipAndTodayAndService = customersInZipAndToday.Where(c => c.IsSuspended == false).ToList();
             //Customers with one-time pickup for that day
-           var customersInZipAndTodayAndServiceAndOneTimePickUp = customersInZipAndTodayAndService.Where(c => c.OneTimePickUpDay == today).ToList();
+            var customersInZipAndTodayAndServiceAndOneTimePickUp = customersInZipAndTodayAndService.Where(c => c.OneTimePickUpDay == today).ToList();
 
             return View(customersInZipAndTodayAndService);
         }
@@ -93,13 +92,13 @@ namespace TrashCollector.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employee.FindAsync(id);
-            if (employee == null)
+            var customer = await _context.Customer.FindAsync(id);
+            if (customer == null)
             {
                 return NotFound();
             }
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", employee.IdentityUserId);
-            return View(employee);
+            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", customer.IdentityUserId);
+            return View(customer);
         }
 
         // POST: Employees/Edit/5
@@ -107,23 +106,20 @@ namespace TrashCollector.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,ZipCode,IdentityUserId")] Employee employee)
-        {
-            if (id != employee.Id)
-            {
-                return NotFound();
-            }
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email, PickedUp, Address,City,State,ZipCode,PickUpDate,SusStartDate,SusEndDate,OneTimePickUpDay,IdentityUserId")] Customer customer)
+         {
+            
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(employee);
+                    _context.Update(customer);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.Id))
+                    if (!EmployeeExists(customer.Id))
                     {
                         return NotFound();
                     }
@@ -134,9 +130,10 @@ namespace TrashCollector.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", employee.IdentityUserId);
-            return View(employee);
+            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", customer.IdentityUserId);
+            return View(customer);
         }
+       
 
         // GET: Employees/Delete/5
         public async Task<IActionResult> Delete(int? id)

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using TrashCollector.Data;
 using TrashCollector.Models;
 
@@ -27,7 +25,7 @@ namespace TrashCollector.Controllers
             var cust = _context.Customer.Where(c => c.IdentityUserId == userId).FirstOrDefault();
             if (cust == null)
             {
-                return RedirectToAction("Create");  
+                return RedirectToAction("Create");
             }
             return View("Details", cust);
         }
@@ -52,7 +50,7 @@ namespace TrashCollector.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Address,City,State,ZipCode,PickUpDate,IdentityUserId")] Customer customer)
-         {
+        {
             if (ModelState.IsValid)
             {
                 _context.Update(customer);
@@ -116,7 +114,7 @@ namespace TrashCollector.Controllers
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", customer.IdentityUserId);
             return View(customer);
         }
-
+        
         // GET: Customers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
