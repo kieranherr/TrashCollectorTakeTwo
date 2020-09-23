@@ -114,6 +114,9 @@ namespace TrashCollector.Controllers
             {
                 try
                 {
+                    int pickup = customer.NumOfPickups;
+                    pickup++;
+                    customer.NumOfPickups = pickup;
                     _context.Update(customer);
                     await _context.SaveChangesAsync();
                 }

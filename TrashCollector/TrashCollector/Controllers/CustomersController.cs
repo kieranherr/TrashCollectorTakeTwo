@@ -19,7 +19,7 @@ namespace TrashCollector.Controllers
         }
 
         // GET: Customers
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cust = _context.Customer.Where(c => c.IdentityUserId == userId).FirstOrDefault();
