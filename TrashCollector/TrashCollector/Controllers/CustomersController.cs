@@ -53,7 +53,6 @@ namespace TrashCollector.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Update(customer);
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
